@@ -43,10 +43,16 @@ body {
 
 #feed-directory{
     padding: 16px; 
-    max-height: 350px; 
+    max-height: auto; 
     overflow-y: auto; 
     background: #181818; 
     border-bottom: 1px solid #333;
+}
+
+#dir-feed-list{
+    padding: 0%;
+    margin-bottom:8px;
+    background-color: #4fd994;
 }
 
 #feed-subscribe-form{

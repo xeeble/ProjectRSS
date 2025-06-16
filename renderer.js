@@ -213,7 +213,7 @@ function renderFeedDirectory(feeds) {
   }
   // Filter UI
   dirDiv.innerHTML = `
-    <div style="margin-bottom:8px;">
+    <div>
       <label id=country-label>Filter by country:</label>
       <select id="dir-country-filter"><option value="">All</option>${[...new Set(feeds.map(f=>f.country))].map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
       <label>Category:</label>
