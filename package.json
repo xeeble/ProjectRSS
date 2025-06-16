@@ -1,0 +1,28 @@
+{
+  "name": "projectrss",
+  "version": "1.0.0",
+  "description": "RSS Reader",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xeeble/ProjectRSS.git"
+  },
+  "keywords": [
+    "RSS"
+  ],
+  "author": "LD",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xeeble/ProjectRSS/issues"
+  },
+  "homepage": "https://github.com/xeeble/ProjectRSS#readme",
+  "devDependencies": {
+    "electron": "^36.4.0"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
