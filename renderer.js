@@ -1,6 +1,3 @@
-const Parser = require('rss-parser')
-const parser = new Parser()
-
 // Helper to get feed title for a given URL from loaded feeds
 let loadedFeeds = []
 
@@ -18,12 +15,12 @@ function loadSubscribedFeeds() {
 
 // Parse a feed from URL
 async function fetchFeed(feedUrl) {
-  try {
-    const feed = await parser.parseURL(feedUrl)
-    return feed
-  } catch (error) {
-    console.error('Error parsing feed:', error)
-    return null
+  if (window.rssAPI && window.rssAPI.fetchFeed) {
+    const result = await window.rssAPI.fetchFeed(feedUrl);
+    if (result && !result.error) return result;
+    else throw new Error(result.error || 'Unknown error');
+  } else {
+    throw new Error('RSS API not available');
   }
 }
 
@@ -33,7 +30,7 @@ async function loadAllFeeds() {
   const toLoad = loadSubscribedFeeds();
   for (const feedUrl of toLoad) {
     try {
-      const feed = await parser.parseURL(feedUrl);
+      const feed = await fetchFeed(feedUrl);
       feedData.push({
         title: feed.title,
         url: feedUrl,
