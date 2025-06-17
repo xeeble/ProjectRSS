@@ -1,6 +1,6 @@
 {
   "name": "projectrss",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "RSS Reader",
   "main": "main.js",
   "scripts": {
