@@ -5,6 +5,7 @@ updateElectronApp()
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
+    icon: 'resources/rss-512.png',
     width: 1200,
     height: 800,
     webPreferences: {
