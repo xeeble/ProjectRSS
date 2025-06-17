@@ -1,10 +1,6 @@
 const Parser = require('rss-parser')
 const parser = new Parser()
 
-const feeds = [
-  
-]
-
 // Helper to get feed title for a given URL from loaded feeds
 let loadedFeeds = []
 
@@ -31,10 +27,10 @@ async function fetchFeed(feedUrl) {
   }
 }
 
+// Load all the feeds by parsing the URLs from localStorage
 async function loadAllFeeds() {
   const feedData = [];
-  const saved = loadSubscribedFeeds();
-  const toLoad = saved.length > 0 ? saved : feeds;
+  const toLoad = loadSubscribedFeeds();
   for (const feedUrl of toLoad) {
     try {
       const feed = await parser.parseURL(feedUrl);
@@ -50,6 +46,7 @@ async function loadAllFeeds() {
   return feedData;
 }
 
+// render the feed directory with available feeds
 function renderFeedList(feedData) {
   const feedList = document.getElementById('feed-list')
   feedList.innerHTML = feedData.map((feed, idx) => `
@@ -67,18 +64,14 @@ function renderFeedList(feedData) {
       renderArticles(feedData[el.dataset.feedIdx])
     })
   })
-  // Add unsubscribe logic
+  // Unsubscribe from feeds
   Array.from(feedList.getElementsByClassName('unsubscribe-btn')).forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.stopPropagation()
       const idx = parseInt(btn.getAttribute('data-feed-idx'))
-      const url = loadedFeeds[idx].url
-      // Remove from loadedFeeds and feedsArr
       loadedFeeds.splice(idx, 1)
-      const arrIdx = feedsArr.indexOf(url)
-      if (arrIdx !== -1) feedsArr.splice(arrIdx, 1)
-      renderFeedList(loadedFeeds)
       saveSubscribedFeeds();
+      renderFeedList(loadedFeeds)
       // Also update feed directory to show unsubscribed feed
       if (window.feedDirectoryFeeds) renderFeedDirectory(window.feedDirectoryFeeds)
       // Clear article content if no feeds left
@@ -92,7 +85,7 @@ function renderFeedList(feedData) {
     })
   })
 }
-
+// display articles from the selected feed
 function renderArticles(feed) {
   const articleContent = document.getElementById('article-content');
   articleContent.innerHTML = `
@@ -121,7 +114,7 @@ function renderArticles(feed) {
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
     });
-    // ...existing image modal logic...
+    // image modal for viewing images
     const modal = document.getElementById('img-modal');
     const modalImg = document.getElementById('modal-img');
     const modalClose = document.getElementById('modal-close');
@@ -146,7 +139,7 @@ function renderArticles(feed) {
   }, 0);
 }
 
-// Add feed subscription UI and logic
+// Feed subscription UI and logic
 function renderFeedSubscription() {
   const sidebar = document.getElementById('sidebar')
   let form = document.getElementById('feed-subscribe-form')
@@ -167,7 +160,6 @@ function renderFeedSubscription() {
       try {
         const feed = await fetchFeed(url)
         if (feed && feed.title) {
-          feeds.push(url)
           loadedFeeds.push({
             title: feed.title,
             url: url,
@@ -202,7 +194,7 @@ async function loadFeedDirectory() {
   })
   return feeds
 }
-
+// Display feed directory with filtering options
 function renderFeedDirectory(feeds) {
   const sidebar = document.getElementById('sidebar')
   let dirDiv = document.getElementById('feed-directory')
@@ -221,6 +213,7 @@ function renderFeedDirectory(feeds) {
     </div>
     <div id="dir-feed-list"></div>
   `
+  // Update feed list based on filters
   function updateList() {
     const country = document.getElementById('dir-country-filter').value
     const category = document.getElementById('dir-category-filter').value
@@ -243,7 +236,6 @@ function renderFeedDirectory(feeds) {
         const url = btn.getAttribute('data-url')
         const feed = await fetchFeed(url)
         if (feed && feed.title) {
-          feedsArr.push(url)
           loadedFeeds.push({
             title: feed.title,
             url: url,
@@ -263,16 +255,13 @@ function renderFeedDirectory(feeds) {
   updateList()
 }
 
-// feedsArr is used for dynamic addition
-const feedsArr = [...feeds]
-
 // Initial load
 loadAllFeeds().then(feedData => {
   loadedFeeds = feedData
   renderFeedSubscription()
   renderFeedList(feedData)
   loadFeedDirectory().then(renderFeedDirectory)
-  // Optionally select the first feed by default
+  // Select the first feed by default
   if (feedData.length > 0) {
     document.querySelectorAll('.feed-item')[0].classList.add('selected')
     renderArticles(feedData[0])
